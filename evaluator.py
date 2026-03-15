@@ -1,6 +1,4 @@
 # evaluator.py
-# Updated to use Ollama (runs locally, 100% free)
-# Make sure Ollama is running before executing: just open the Ollama app
 
 import time
 import json
@@ -8,15 +6,11 @@ from openai import OpenAI
 from dataset import EVAL_DATASET
 from metrics import compute_all_metrics
 
-# Ollama runs locally and exposes an OpenAI-compatible API at this address
-# This means we can use the same OpenAI library — just point it to localhost
 client = OpenAI(
     base_url="http://localhost:11434/v1",
-    api_key="ollama"  # Ollama doesn't need a real key, but the library requires something
+    api_key="ollama"
 )
 
-# We test 2 different models with the same prompt
-# This gives a fair comparison — same questions, same prompt, different models
 SYSTEM_PROMPT = "You are a helpful assistant. Answer clearly and accurately."
 
 MODELS_TO_TEST = [
@@ -34,9 +28,6 @@ MODELS_TO_TEST = [
 
 
 def run_single_evaluation(question: str, ideal_answer: str, model_config: dict) -> dict:
-    """
-    Sends ONE question to ONE model config and returns the scored result.
-    """
     start_time = time.time()
 
     try:
@@ -53,7 +44,6 @@ def run_single_evaluation(question: str, ideal_answer: str, model_config: dict) 
         latency = time.time() - start_time
         response_text = response.choices[0].message.content
 
-        # Ollama may not always return token counts, so we estimate from word count
         input_tokens = len(question.split()) + len(model_config["system_prompt"].split())
         output_tokens = len(response_text.split())
 
@@ -91,9 +81,6 @@ def run_single_evaluation(question: str, ideal_answer: str, model_config: dict) 
 
 
 def run_full_evaluation(progress_callback=None) -> list:
-    """
-    Runs ALL questions against ALL prompt configs and returns the full results.
-    """
     results = []
     total_runs = len(EVAL_DATASET) * len(MODELS_TO_TEST)
     current = 0

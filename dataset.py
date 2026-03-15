@@ -1,6 +1,5 @@
 # dataset.py
-# This file contains your test questions and the correct/ideal answers.
-# Think of this as your "exam paper" that you'll use to grade AI models.
+
 
 EVAL_DATASET = [
     {

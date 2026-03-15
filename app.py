@@ -1,6 +1,4 @@
 # app.py
-# Simplified LLM Evaluation Dashboard with Filters
-# Run with: streamlit run app.py
 
 import streamlit as st
 import pandas as pd
@@ -12,7 +10,7 @@ from evaluator import run_full_evaluation, save_results, load_results
 
 st.set_page_config(page_title="LLM Evaluation Dashboard", page_icon="🧪", layout="wide")
 
-st.title("🧪 LLM Evaluation Dashboard")
+st.title(" LLM Evaluation Dashboard")
 st.markdown("*Compare AI models on quality, hallucination risk, and relevance*")
 st.divider()
 
@@ -57,12 +55,10 @@ if run_button:
 elif results_exist:
     results = load_results()
 
-# Main Dashboard
 if results:
     df = pd.DataFrame(results)
     df = df[df["status"] == "success"].copy()
 
-    # Filters in sidebar
     with st.sidebar:
         selected_models = st.multiselect(
             "Models",
@@ -80,7 +76,6 @@ if results:
         df["category"].isin(selected_categories)
     ]
 
-    # Summary Cards
     st.subheader("📊 Model Summary")
     summary = df.groupby("model_name").agg(
         Avg_Quality=("overall_quality", "mean"),
@@ -100,7 +95,6 @@ if results:
 
     st.divider()
 
-    # Performance by Category
     st.subheader("📂 Performance by Category")
     cat_summary = df.groupby(["model_name", "category"]).agg(
         Avg_Quality=("overall_quality", "mean")
